@@ -1,7 +1,6 @@
 // 3rd party dependecies
 import { mapGetters } from 'vuex'
 import groupBy from 'lodash-es/groupBy'
-import uniqBy from 'lodash-es/uniqBy'
 
 // Core dependecies
 import i18n from '@vue-storefront/core/lib/i18n'
@@ -79,7 +78,13 @@ export default {
           'loading': this.getThumbnail(this.product.image, 310, 300)
         })
       }
-      return uniqBy(images, 'src').filter(f => { return f.src && f.src !== config.images.productPlaceholder })
+      console.log(images)
+      let groupedBySrc = groupBy(images, 'src')
+      let groupedAndReduced = []
+      Object.keys(groupedBySrc).forEach(key => {
+        groupedAndReduced.push(groupedBySrc[key].reduce((accumulator, current) => Object.assign(accumulator, current)))
+      })
+      return groupedAndReduced.filter(f => { return f.src && f.src !== config.images.productPlaceholder })
     },
     image () {
       return this.gallery.length ? this.gallery[0] : false
